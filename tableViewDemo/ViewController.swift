@@ -70,8 +70,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
              //println("expanded: \(isExpanded[indexPath.section])")
         }
         
-        println("expanded: \(isExpanded[indexPath.section])")
-        tableView.reloadData()
+       // println("expanded: \(isExpanded[indexPath.section])")
+        // instead of reloadData, there is a family of calls one can use, like this:
+        
+        tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: UITableViewRowAnimation.Fade)
+        
+        //tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
