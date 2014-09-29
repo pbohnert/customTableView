@@ -12,6 +12,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     @IBOutlet weak var tableView: UITableView!
     var users: [[String:String]]!
+    var isExpanded: [Int:Bool]! = [Int:Bool]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,13 +29,49 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = 107
        
         
         // Do any additional setup after loading the view, typically from a nib.
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        if let expanded = isExpanded[section] {
+            return expanded ? users.count : 1
+        } else {
+            return 1
+        }
+    }
+    
+    // define that our tableView will have sections
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 10
+    }
+    
+    //define View for Header in Section, including setting background color, a label and add label as subview
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var headerView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        
+        headerView.backgroundColor = UIColor(white: 0.8, alpha: 0.8)
+        var headerLabel = UILabel(frame: CGRect(x: 10, y: 0, width: 320, height: 50))
+        headerLabel.text = "Section \(section)"
+        headerView.addSubview(headerLabel)
+        return headerView
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        if let expanded = isExpanded[indexPath.section] {
+            isExpanded[indexPath.section] = !expanded
+            //println("expanded: \(expanded)")
+        } else {
+            isExpanded[indexPath.section] = true
+             //println("expanded: \(isExpanded[indexPath.section])")
+        }
+        
+        println("expanded: \(isExpanded[indexPath.section])")
+        tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -46,7 +83,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         return cell
     }
-    
+    //for section, you need to specify height of header
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
